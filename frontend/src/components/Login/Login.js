@@ -111,7 +111,7 @@ const Login = () => {
         />
       </div>
       <form style={styles.form} onSubmit={handleSubmit}>
-        <h2 style={styles.heading}>KharchaGuru</h2>
+        <h2 style={styles.heading}>PocketPlanner</h2>
         <p style={styles.subtitle}>Streamline your expense management...</p>
         {error && <p style={styles.error}>{error}</p>}
         <input
