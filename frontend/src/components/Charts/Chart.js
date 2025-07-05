@@ -29,53 +29,44 @@ ChartJs.register(
 )
 
 function Chart() {
-    const {incomes, expenses} = useGlobalContext()
+    const { incomes, expenses } = useGlobalContext();
+
+    // Extract and merge dates from incomes and expenses
+    const allDates = [
+        ...incomes.map((income) => income.date),
+        ...expenses.map((expense) => expense.date),
+    ];
+
+    // Remove duplicates and sort dates in ascending order
+    const sortedDates = [...new Set(allDates)].sort((a, b) => new Date(a) - new Date(b));
 
     const data = {
-        // on x axis we will label the date 
-
-        labels: incomes.map((inc) =>{
-            const {date} = inc
-            return dateFormat(date)
-        }),
-
-        // on y  we will label the amount of money
+        // Use sorted dates as labels
+        labels: sortedDates.map((date) => dateFormat(date)),
 
         datasets: [
             {
                 label: 'Income',
-                // we need the actual data for the income
-                data: [
-                    // spread the income and then map
-                    ...incomes.map((income) => {
-                        const {amount} = income
-                        return amount
-                    })
-                ],
+                data: sortedDates.map((date) => {
+                    // Match income amount to the date or return 0 if no income on that date
+                    const income = incomes.find((inc) => inc.date === date);
+                    return income ? income.amount : 0;
+                }),
                 backgroundColor: 'green',
-
-                // tension is used for making the graph to be curved
-
-                tension: .2
+                tension: 0.2,
             },
             {
                 label: 'Expenses',
-                // we need the actual data for the expenses
-                data: [
-                    // spread the expense and then map
-                    ...expenses.map((expense) => {
-                        const {amount} = expense
-                        return amount
-                    })
-                ],
+                data: sortedDates.map((date) => {
+                    // Match expense amount to the date or return 0 if no expense on that date
+                    const expense = expenses.find((exp) => exp.date === date);
+                    return expense ? expense.amount : 0;
+                }),
                 backgroundColor: 'red',
-
-                // tension is used for making the graph to be curved
-                
-                tension: .2
-            }
-        ]
-    }
+                tension: 0.2,
+            },
+        ],
+    };
 
 
     return (
